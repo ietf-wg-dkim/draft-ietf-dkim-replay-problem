@@ -296,7 +296,9 @@ have authentication that succeeds.
 
   A DKIM Replay Attack uses a single message, sent through Direct delivery, and repurposes it.
 
-Indirect Delivery: This is mail involving a Mediator, producing a
+Indirect Delivery:
+
+:   This is mail involving a Mediator, producing a
 sequence of submission/delivery segments.  While not required, the
 Mediator is typically viewed as being in an ADMD that is independent
 of the author's ADMD and independent of the recipient's ADMD.
@@ -341,7 +343,6 @@ Alias (e.g., Auto-forwarder):
 FROM) address is replaced, to be something related to the forwarder.
 A resender might add trace header fields, but typically does not
 modify the recipients or the message body.
-
 
 
 # DKIM Replay
