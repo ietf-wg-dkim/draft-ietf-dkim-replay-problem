@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
+<rfc version="3" ipr="trust200902" docName="draft-ietf-dkim-replay-problem-00" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" consensus="true">
+
+<front>
+<title abbrev="DKIM Replay Problem">DKIM Replay Problem Statement</title><seriesInfo value="draft-ietf-dkim-replay-problem-00" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
+<author fullname="Weihaw Chuang"><organization>Google, Inc.</organization><address><postal><street></street>
+</postal><email>weihaw@google.com</email>
+</address></author><author fullname="Dave Crocker"><organization>Brandenburg InternetWorking</organization><address><postal><street></street>
+</postal><email>dcrocker@bbiw.net</email>
+</address></author><author fullname="Allen Robinson"><organization>Google, Inc.</organization><address><postal><street></street>
+</postal><email>arobins@google.com</email>
+</address></author><author fullname="Bron Gondwana"><organization>Fastmail Pty Ltd</organization><address><postal><street></street>
+</postal><email>brong@fastmailteam.com</email>
+</address></author><date/>
+<area>Application</area>
+<workgroup>DKIM</workgroup>
+<keyword>DKIM</keyword>
+<keyword>Replay</keyword>
+
+<abstract>
+<t>DomainKeys Identified Mail (DKIM, RFC6376) permits claiming some
+responsibility for a message by cryptographically associating a domain name
+with the message.  For data covered by the cryptographic signature, this also
+enables detecting changes made during transit. DKIM survives basic email
+relaying.  In a Replay Attack, a recipient of a DKIM-signed message re-posts
+the message to other recipients,while retaining the original, validating
+signature, and thereby leveraging the reputation of the original signer. This
+document discusses the resulting damage to email delivery, interoperability,
+and associated mail flows.  A significant challenge to mitigating this
+problem is that it is difficult for receivers to differentiate between
+legitimate forwarding flows and a DKIM Replay Attack.</t>
+</abstract>
+
+</front>
+
+<middle>
+
+<section anchor="introduction"><name>Introduction</name>
+
+<dl>
+<dt>DomainKeys Identified Mail (DKIM):</dt>
+<dd><t>Defined in <xref target="RFC6376"></xref> is a well-established email protocol.</t>
+</dd>
+</dl>
+<t>DKIM permits a person, role, or organization to claim some responsibility for
+a message by associating a domain name <xref target="RFC1034"></xref> with the message
+<xref target="RFC5322"></xref>, which they are authorized to use.  This can be an author's
+organization, an operational relay, or one of their agents.  Assertion of
+responsibility is validated through a cryptographic signature and by querying
+the Signer's domain directly to retrieve the appropriate public key.</t>
+<t>DKIM authentication allows domains to create a durable identity to attach
+to email. Since its initial proposal it has been widely deployed by
+systems sending and receiving email. Receiving services use the DKIM
+identity as part of their inbound mail handling, and make delivery
+decisions based on the DKIM domain. Email sending services sign customer
+email with the customer's own domain, but many also sign with their own
+domain.</t>
+
+<section anchor="the-problem"><name>The problem</name>
+<t>The presence of a DKIM signature serves as a basis for developing an
+assessment of mail received, over time, using that signature.  That
+assessment constitutes a reputation, which then serves to guide future
+handling of mail arriving with a DKIM signature for that domain name.  The
+presence of a validated DKIM signature was designed to ensure that the
+developed reputation is the result of activity only by the domain owner, and
+not by other, independent parties.  That is, it defines a 'clean' channel of
+behavior by the domain owner, with no 'noise' introduced by other actors.</t>
+<t>A receiving filtering system contains a rich array of rules and heuristics for
+assessing email, for protecting users against spam, phishing, and other
+abuses.  DKIM therefore provides an identity that some systems can use for
+reputation assessment and prediction of future sender behavior.</t>
+<t>During development of the DKIM specification, DKIM Replay was identified as
+only of hypothetical concern.  However, that attack has become commonplace,
+particularly for systems:</t>
+
+<ul>
+<li><t>Attackers create, obtain access, or compromise an account at
+some Originator that signs messages with DKIM</t>
+</li>
+<li><t>Attackers locate a Receiver that consumes DKIM to make a delivery
+decision.  If the Receiver uses a reputation system with DKIM for
+delivery decisions, the attacker finds an Originator with a high
+reputation.</t>
+</li>
+<li><t>They send an email from that account to an external account also
+under their control.</t>
+</li>
+<li><t>This single message is delivered to the attacker's mailbox,
+giving them an email with a valid DKIM signature, for a domain with
+high reputation.</t>
+</li>
+<li><t>They then post the message to a new and large set of additional
+recipients at the Receiver.</t>
+</li>
+</ul>
+<t>Internet Mail permits sending a message to addresses that are not
+listed in the content To:, Cc: or Bcc: header fields.  Although
+DKIM covers portions of the message content, and can cover these
+header fields, it does not cover the envelope addresses, used by
+the email transport service, for determining handling behaviors.
+So this message can then be replayed to arbitrary thousands or
+millions of other recipients, none of whom were specified by the
+original author.</t>
+<t>That is, DKIM Replay takes a message with a valid DKIM signature,
+and distributes it widely to many additional recipients, without
+breaking the signature.</t>
+
+<ul spacing="compact">
+<li>Further, a message used in a Replay Attack has the same attributes
+as some types of legitimate mail.  That is, an individual, replayed
+message has no observable differences from a legitimate message.</li>
+</ul>
+<t>Therefore, DKIM Replay is impossible to detect or prevent with current
+standards and practices.  Simply put, email authentication does not
+distinguish benign re-posting flows from a DKIM Replay Attack.</t>
+<t>ARC <xref target="RFC8617"></xref> is a protocol to securely propagate authentication results seen
+by Mediators that re-post a message, such as mailing lists.  Because ARC is
+heavily based on DKIM it has the same &quot;replay&quot; issue as described in section
+9.5.</t>
+</section>
+
+<section anchor="glossary"><name>Glossary</name>
+<t>Modern email operation often involves many actors and many different actions.
+This section attempts to identify those relevant to Replay Attacks.</t>
+<t>NOTE: This document is only Informative and omits the normative language defined
+in <xref target="RFC2119"></xref>. Mail architectural terminology that is
+used here is from <xref target="RFC5598"></xref> and <xref target="RFC5321"></xref>.</t>
+<t><xref target="RFC5598"></xref> defines mail interactions conceptually from three
+perspectives of activities, divided into three types of roles:</t>
+
+<dl>
+<dt>Users:</dt>
+<dd><t>This includes end-users, but also Mediators that re-post a message after delivery.</t>
+</dd>
+<dt>Services (Message Handling Service - MHS):</dt>
+<dd><t>Moving a message from a single submission to its related delivery.</t>
+</dd>
+<dt>Administrative (ADministrative Management Domain - ADMD):</dt>
+<dd><t>Covering independent operational scope, where functions of authorship, handling, and receiving can take place in any number of different ADMDs.</t>
+</dd>
+</dl>
+<t>Also, as noted in <xref target="RFC5598"></xref>, a given implementation might perform multiple roles.</t>
+<t>It is useful to broadly identify participants in mail handling by
+functionality as defined in <xref target="RFC5598"></xref> as:</t>
+
+<ul spacing="compact">
+<li>Mail Submission Agent (MSA)</li>
+<li>Mail Transmission Agent (MTA)</li>
+<li>Mail Delivery Agent (MDA)</li>
+</ul>
+<t>In addition, a user interacts with the handling service via a:</t>
+
+<ul spacing="compact">
+<li>Mail User Agent (MUA).</li>
+</ul>
+<t>The following is a subset of the Mail Handling Services defined in <xref target="RFC5598"></xref>
+to be used in this document.   The are summarized here for convenience:</t>
+
+<dl>
+<dt>Originator:</dt>
+<dd><t>defined in Section 2.2.1.  This is the first component
+of the MHS and works on behalf of the author to ensure the message
+is valid for transport; it then posts it to the relay (MTA) that
+provides SMTP store-and-forward transfer.  The Originator can DKIM
+sign the message on behalf of the author, although it is also
+possible that the author's system, or even the first MTA, does DKIM
+signing.</t>
+</dd>
+<dt>Alias:</dt>
+<dd><t>defined in Section 5.1.  A type of Mediator user, operating
+in between a delivery and a following posting.  The Alias replaces
+the original RCPT TO envelope recipient address but does not alter
+the content address field header fields.  Often used for Auto-Forwarding.</t>
+</dd>
+<dt>ReSender:</dt>
+<dd><t>as defined in Section 5.2, is a type of Mediator user,
+like an Alias; however the ReSender updates the recipient address,
+and &quot;splices&quot; the destination header field and possibly other address
+fields as well.</t>
+</dd>
+<dt>Mailing Lists:</dt>
+<dd><t>defined in Section 5.3 is another Mediator; it
+receives a message and reposts it to the list's members; it might
+add list-specific header fields <xref target="RFC4021"></xref> e.g. List-XYZ: might
+modify other contents, such as revising the Subject: field, or
+adding content to the body.</t>
+</dd>
+<dt>Receiver:</dt>
+<dd><t>defined in Section 2.2.4 is the last stop in the MHS, and
+works on behalf of the recipient to deliver the message to their
+inbox; it also might perform filtering.</t>
+</dd>
+</dl>
+<t>Any of these actors, as well as those below, can add trace and operational header fields.</t>
+<t>Modern email often includes additional services.  Three that are
+relevant to DKIM Replay are:</t>
+
+<dl>
+<dt>Email Service Provider (ESP):</dt>
+<dd><t>Often called a Bulk Sender - An
+originating third-party service, acting as an agent of the author
+and sending to a list of recipients.  They may DKIM sign as themselves
+and/or sign with the author's domain name.</t>
+</dd>
+<dt>Outbound Filtering Service:</dt>
+<dd><t>Rather than sending directly to
+recipients' servers, the Originator can route mail through a Filtering
+Service, to provide spam or data loss protection services.  This
+service may modify the message and can have a different ADMD from
+the Originator.</t>
+</dd>
+<dt>Inbound Filtering Service:</dt>
+<dd><t>The Receiver can also route mail through
+a Filtering Service, to provide spam, malware and other anti-abuse
+protection services.  Typically, this is done by listing the service
+in an DNS MX record.  This service may modify the message and have
+a different ADMD from the Receiver.</t>
+</dd>
+</dl>
+<t>The above services can use email authentication as defined in the
+following specifications:</t>
+
+<dl>
+<dt>DomainKeys Identified Mail (DKIM):</dt>
+<dd><t>Defined in <xref target="RFC6376"></xref>, with a
+cryptographic signature that typically survives basic relaying but
+can be broken when processed by a Mediator.  Further, DKIM Replay
+is defined in RFC6376 section 8.6.</t>
+</dd>
+<dt>Sender Policy Framework (SPF):</dt>
+<dd><t>Defined in <xref target="RFC7208"></xref>, is another
+form of message handling authentication that works in parallel to
+DKIM and might be relevant to the detection of a DKIM Replay Attack.</t>
+</dd>
+</dl>
+</section>
+</section>
+
+<section anchor="mail-flow-scenarios"><name>Mail Flow Scenarios</name>
+<t>The following section categorizes the different mail flows by a
+functional description, email authentication and recipient email
+header fields.</t>
+
+<section anchor="basic-types-of-flows"><name>Basic types of flows</name>
+<t>Direct delivery: In this case, email travels directly from the
+author's ADMD or the ADMD of their agent -- to the recipient's ADMD
+or their agent.  That is, for origination and reception, any
+interesting creation or modification is done by agreement with
+either the author or the recipient.  As such, these cases should
+have authentication that succeeds.</t>
+<t>In this type of flow, SPF is expected to validate.</t>
+<t>A DKIM Replay Attack uses a single message, sent through Direct delivery, and repurposes it.</t>
+<t>Indirect Delivery: This is mail involving a Mediator, producing a
+sequence of submission/delivery segments.  While not required, the
+Mediator is typically viewed as being in an ADMD that is independent
+of the author's ADMD and independent of the recipient's ADMD.</t>
+</section>
+
+<section anchor="direct-examples"><name>Direct examples</name>
+<t>ESP: An ESP is authorized to act on behalf of the author and will
+originate messages given a message body and a list of recipients,
+sending a different message to each recipient.  Content address
+fields are typically restricted to just the address of that copy's
+recipient.  The mail that is sent is typically 'direct', but the
+ESP cannot control whether an address refers to an alias or mailing
+list, or the like.  So, the message might become indirect, before
+reaching the final recipient.  : The bulk nature of ESP activity
+means that it can look the same as DKIM Replay traffic.</t>
+<t>Outbound filtering: If the Author's domain has an SPF record that
+does not list this filtering service, SPF validation for the author's
+domain will fail.  However, the ESP might produce an SPF record of
+their own and use their own SMTP MAIL FROM (return) address.</t>
+
+<dl>
+<dt>Inbound filtering:</dt>
+<dd><t>Typically, an inbound filtering service will
+add the results of its analysis to the message.  It might make other
+modifications to the message.</t>
+</dd>
+</dl>
+</section>
+
+<section anchor="indirect-examples"><name>Indirect Examples</name>
+<t>Indirect mail flows break SPF validation, unless the Mediator is
+listed in the SPF record.  This is almost never the case.</t>
+<t>Mailing List: The modifications done by a mailing list especially
+to the Subject: header field and the body of the message - nearly
+always break any existing DKIM signatures.</t>
+
+<dl>
+<dt>Alias (e.g., Auto-forwarder):</dt>
+<dd><t>Typically, the envelope return (MAIL
+FROM) address is replaced, to be something related to the forwarder.
+A resender might add trace header fields, but typically does not
+modify the recipients or the message body.</t>
+</dd>
+</dl>
+</section>
+</section>
+
+<section anchor="dkim-replay"><name>DKIM Replay</name>
+
+<section anchor="scenario"><name>Scenario</name>
+<t>A spammer will find a mailbox provider with a high reputation and
+that signs their message with DKIM.  The spammer sends a message
+with spam content from there to a mailbox the spammer controls.
+This received message is sometimes updated with additional header
+fields such as To: and Subject: that do not damage the existing
+DKIM signature, if those fields were not covered by the DKIM
+signature.  The resulting message is then sent at scale to target
+recipients.  Because the message signature is for a domain name
+with a high reputation, the message with spam content is more likely
+to get through to the inbox.  This is an example of a spam
+classification false negative incorrectly assessing spam to not be
+spam.</t>
+<t>When large amounts of such spam are sent to a single mailbox provider
+-- or through a filtering service with access to data across multiple
+mailbox providers -- the operator's filtering engine will eventually
+react by dropping the reputation of the original DKIM signer.  Benign
+mail from the signer's domain then starts to go to the spam folder.
+For the benign mail, this is an example of a spam classification
+false positive.</t>
+<t>In both cases, mail that is potentially wanted by the recipient
+becomes much harder to find, reducing its utility to the recipient
+(and the author.)  In the first case, the wanted mail is mixed with
+potentially large quantities of spam.  In the second case, the
+wanted mail is put in the spam folder.</t>
+</section>
+
+<section anchor="direct-flows"><name>Direct Flows</name>
+<t>Legitimate mail might have a valid DKIM signature and no associated
+SPF record.</t>
+<t>So might a Replay attack.</t>
+</section>
+
+<section anchor="indirect-flows"><name>Indirect Flows</name>
+<t>Example benign indirect flows are outbound and inbound gateway,
+mailing lists, and forwarders.  This legitimate mail might have a
+valid DKIM signature, and SPF validation that is not aligned with
+the content From:</t>
+<t>So might a Replay attack.</t>
+</section>
+</section>
+
+<section anchor="replay-technical-characteristics"><name>Replay technical characteristics</name>
+<t>A message that has been replayed will typically show these
+characteristics:</t>
+
+<ul>
+<li><t>Original DKIM signature still validates</t>
+</li>
+<li><t>Content covered by that signature is unchanged</t>
+</li>
+<li><t>Received: header fields might be different from the original,
+or at least have ones that are added</t>
+</li>
+<li><t>SMTP Envelope RCTP-TO address will be different</t>
+</li>
+<li><t>SMTP MAIL-FROM might be different</t>
+</li>
+<li><t>Replayed mail will typically be sent in very large volume</t>
+</li>
+<li><t>The original SPF will typically not validate; however if the
+MAIL-FROM has been changed to an address controlled by the spammer,
+SPF might validate.</t>
+</li>
+</ul>
+</section>
+
+<section anchor="basic-solution-space"><name>Basic solution space</name>
+<t>As can be seen from the above discussion, there is no straightforward
+way to detect DKIM Replay for an individual message, and possibly
+nothing completely reliable even in the aggregate.  The challenge,
+then, is to look for passive analysis that might provide a good
+heuristic, as well as active measures by the author's system to add
+protections.</t>
+<t>Here are some potential solutions to the problem, and their pros
+and cons:</t>
+
+<section anchor="include-the-smtp-rcpt-to-address-in-the-dkim-signature"><name>Include the SMTP RCPT-TO address in the DKIM signature</name>
+<t>Since this information is different in the Replay, than it was in
+the original sending, locking it into the signature will make
+validation fail, if the value has been changed.</t>
+
+<ul>
+<li><t>This avoids Replay to destination addresses not anticipated by
+the DKIM signer.</t>
+</li>
+<li><t>Indirect flows will fail, since forwarding involves rewriting
+the ENVELOPE-TO; however they already typically fail.</t>
+</li>
+<li><t>This will detect DKIM Replays, but not distinguish them from all
+other forwarding.</t>
+</li>
+<li><t>If a message has more than one addressee, should the signature
+cover all of them, or does this require sending one message per
+addressee?  If it covers all of them, note that they might be on
+different systems, so that upon arrival, the RCPT-TO list  will not
+include all of the original addresses</t>
+</li>
+</ul>
+</section>
+
+<section anchor="count-known-dkim-signatures"><name>Count known DKIM signatures</name>
+<t>This technique caches known DKIM signatures and counts them.  Those
+above a certain threshold is considered DKIM replay.</t>
+
+<ul>
+<li><t>Since the same signature is being replayed many times, this might
+allow a receiving site with many mailboxes to detect whether a
+message is part of a DKIM Replay set, and to then suppress it.</t>
+</li>
+<li><t>Mailing list traffic, aliases, and the like might also show up
+as duplicates.  So this is only an heuristic, and might produce
+false positives.</t>
+</li>
+<li><t>Caches have storage overhead, and uncertain TTLs.</t>
+</li>
+</ul>
+</section>
+
+<section anchor="strip-dkim-signatures-on-mailbox-delivery"><name>Strip DKIM signatures on mailbox delivery</name>
+
+<ul>
+<li><t>Messages delivered to a mailbox lacking DKIM signatures can no
+longer be replayed.</t>
+</li>
+<li><t>Has no effect when the receiving platform is collaborating with
+the bad actor, as the attacker would just avoid stripping the header
+fields.</t>
+</li>
+</ul>
+</section>
+
+<section anchor="shorten-dkim-signature-key-or-signature-lifetime"><name>Shorten DKIM signature key or signature lifetime</name>
+
+<ul>
+<li><t>If the key is no longer available through the DNS, the signature
+will no longer validate</t>
+</li>
+<li><t>Alternatively express a validity period after which the signature
+is no longer valid</t>
+</li>
+<li><t>Unfortunately, bad actors are quite good at taking action very
+quickly, and there is a limit to how much the window can be shortened,
+if the key is to have any utility for legitimate mail.</t>
+</li>
+</ul>
+</section>
+
+<section anchor="add-per-hop-signature-specifying-the-destination-domain"><name>Add Per-hop signature, specifying the destination domain</name>
+<t>Distinguish each forwarding hop by its own signature which permits
+each forwarding hop to specify the intended next destination ADMD.
+That intent can be verified to detect DKIM replay at the Receiver
+when the intended ADMD mismatches the current one.</t>
+
+<ul>
+<li><t>Messages with this kind of signature cannot be replayed down a
+different pathway, since the destination won't match.</t>
+</li>
+<li><t>Requires every site along the path to support this spec, and to
+detect whether the next stop is making a commitment to follow the
+spec.</t>
+</li>
+<li><t>If email goes to a site that does not support this behavior,
+traversing a naive forwarder remains indistinguishable from Replay.</t>
+</li>
+<li><t>The time needed to change a global infrastructure such as email,
+to fully support a capability like this in every MTA is essentially
+infinite; therefore use of this approach must be narrowly tailored
+to scenarios that will adopt it and garner substantial benefit from
+it.</t>
+</li>
+</ul>
+</section>
+</section>
+
+<section anchor="security-considerations"><name>Security Considerations</name>
+<t>This problem statement document has no security considerations.
+(Subsequent documents defining changes to DKIM will very likely
+introduce new security considerations)</t>
+</section>
+
+<section anchor="iana-considerations"><name>IANA Considerations</name>
+<t>This document has no IANA actions.</t>
+</section>
+
+</middle>
+
+<back>
+<references><name>Informative References</name>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1034.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4021.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5321.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5322.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5598.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6376.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7208.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8617.xml"/>
+</references>
+
+<section anchor="acknowledgments" numbered="false"><name>Acknowledgments</name>
+<t>Thanks goes to Emanuel Schorsch, Evan Burke, Laura Atkins and Murray
+Kucherawy for their advice.</t>
+</section>
+
+</back>
+
+</rfc>
