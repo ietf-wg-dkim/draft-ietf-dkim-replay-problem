@@ -258,8 +258,6 @@ a different ADMD from the Receiver.
 The above services can use email authentication as defined in the
 following specifications:
 
-
-
 DomainKeys Identified Mail (DKIM):
 
 :    Defined in [@RFC6376], with a
@@ -282,8 +280,6 @@ header fields.
 
 
 ## Basic types of flows
-
-
 
 Direct delivery: In this case, email travels directly from the
 author's ADMD or the ADMD of their agent -- to the recipient's ADMD
@@ -327,7 +323,6 @@ Inbound filtering:
 add the results of its analysis to the message.  It might make other
 modifications to the message.
 
-
 ## Indirect Examples
 
 Indirect mail flows break SPF validation, unless the Mediator is
@@ -346,7 +341,6 @@ modify the recipients or the message body.
 
 
 # DKIM Replay
-
 
 ## Scenario
 
@@ -400,8 +394,6 @@ So might a Replay attack.
 
 A message that has been replayed will typically show these
 characteristics:
-
-
 
 *  Original DKIM signature still validates
 
@@ -462,8 +454,6 @@ include all of the original addresses
 This technique caches known DKIM signatures and counts them.  Those
 above a certain threshold is considered DKIM replay.
 
-
-
 *  Since the same signature is being replayed many times, this might
 allow a receiving site with many mailboxes to detect whether a
 message is part of a DKIM Replay set, and to then suppress it.
@@ -505,8 +495,6 @@ Distinguish each forwarding hop by its own signature which permits
 each forwarding hop to specify the intended next destination ADMD.
 That intent can be verified to detect DKIM replay at the Receiver
 when the intended ADMD mismatches the current one.
-
-
 
 *  Messages with this kind of signature cannot be replayed down a
 different pathway, since the destination won't match.

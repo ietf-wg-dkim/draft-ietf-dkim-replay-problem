@@ -1220,7 +1220,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Chuang, et al.</td>
-<td class="center">Expires 17 October 2023</td>
+<td class="center">Expires 18 October 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1233,12 +1233,12 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-ietf-dkim-replay-problem-00</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-04-15" class="published">15 April 2023</time>
+<time datetime="2023-04-16" class="published">16 April 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-10-17">17 October 2023</time></dd>
+<dd class="expires"><time datetime="2023-10-18">18 October 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1294,7 +1294,7 @@ legitimate forwarding flows and a DKIM Replay Attack.<a href="#section-abstract-
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 October 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 October 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1592,7 +1592,8 @@ inbox; it also might perform filtering.<a href="#section-1.2-11.10.1" class="pil
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-1.2-12">Any of these actors, as well as those below, can add trace and operational header fields.<a href="#section-1.2-12" class="pilcrow">¶</a></p>
+<p id="section-1.2-12">Any of these actors, as well as those below, can add trace and
+operational header fields.<a href="#section-1.2-12" class="pilcrow">¶</a></p>
 <p id="section-1.2-13">Modern email often includes additional services.  Three that are
 relevant to DKIM Replay are:<a href="#section-1.2-13" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-1.2-14">
@@ -1667,10 +1668,16 @@ either the author or the recipient.  As such, these cases should
 have authentication that succeeds.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">In this type of flow, SPF is expected to validate.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.1-3">A DKIM Replay Attack uses a single message, sent through Direct delivery, and repurposes it.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
-<p id="section-2.1-4">Indirect Delivery: This is mail involving a Mediator, producing a
+<span class="break"></span><dl class="dlParallel" id="section-2.1-4">
+          <dt id="section-2.1-4.1">Indirect Delivery:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-4.2">
+            <p id="section-2.1-4.2.1">This is mail involving a Mediator, producing a
 sequence of submission/delivery segments.  While not required, the
 Mediator is typically viewed as being in an ADMD that is independent
-of the author's ADMD and independent of the recipient's ADMD.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+of the author's ADMD and independent of the recipient's ADMD.<a href="#section-2.1-4.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
 </section>
 </div>
 <div id="direct-examples">

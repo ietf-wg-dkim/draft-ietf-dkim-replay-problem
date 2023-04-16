@@ -6,12 +6,12 @@
 DKIM                                                           W. Chuang
 Internet-Draft                                              Google, Inc.
 Intended status: Informational                                D. Crocker
-Expires: 17 October 2023                     Brandenburg InternetWorking
+Expires: 18 October 2023                     Brandenburg InternetWorking
                                                              A. Robinson
                                                             Google, Inc.
                                                              B. Gondwana
                                                         Fastmail Pty Ltd
-                                                           15 April 2023
+                                                           16 April 2023
 
 
                      DKIM Replay Problem Statement
@@ -48,13 +48,13 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 October 2023.
+   This Internet-Draft will expire on 18 October 2023.
 
 
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 1]
+Chuang, et al.           Expires 18 October 2023                [Page 1]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -110,7 +110,7 @@ Table of Contents
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 2]
+Chuang, et al.           Expires 18 October 2023                [Page 2]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -166,7 +166,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 3]
+Chuang, et al.           Expires 18 October 2023                [Page 3]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -222,7 +222,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 4]
+Chuang, et al.           Expires 18 October 2023                [Page 4]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -278,7 +278,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 5]
+Chuang, et al.           Expires 18 October 2023                [Page 5]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -334,7 +334,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 6]
+Chuang, et al.           Expires 18 October 2023                [Page 6]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -359,10 +359,11 @@ Internet-Draft             DKIM Replay Problem                April 2023
    A DKIM Replay Attack uses a single message, sent through Direct
    delivery, and repurposes it.
 
-   Indirect Delivery: This is mail involving a Mediator, producing a
-   sequence of submission/delivery segments.  While not required, the
-   Mediator is typically viewed as being in an ADMD that is independent
-   of the author's ADMD and independent of the recipient's ADMD.
+   Indirect Delivery:  This is mail involving a Mediator, producing a
+      sequence of submission/delivery segments.  While not required, the
+      Mediator is typically viewed as being in an ADMD that is
+      independent of the author's ADMD and independent of the
+      recipient's ADMD.
 
 2.2.  Direct examples
 
@@ -389,8 +390,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-
-Chuang, et al.           Expires 17 October 2023                [Page 7]
+Chuang, et al.           Expires 18 October 2023                [Page 7]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -446,7 +446,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 8]
+Chuang, et al.           Expires 18 October 2023                [Page 8]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -502,7 +502,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023                [Page 9]
+Chuang, et al.           Expires 18 October 2023                [Page 9]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -558,7 +558,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023               [Page 10]
+Chuang, et al.           Expires 18 October 2023               [Page 10]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -614,7 +614,7 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023               [Page 11]
+Chuang, et al.           Expires 18 October 2023               [Page 11]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -670,7 +670,7 @@ Authors' Addresses
 
 
 
-Chuang, et al.           Expires 17 October 2023               [Page 12]
+Chuang, et al.           Expires 18 October 2023               [Page 12]
 
 Internet-Draft             DKIM Replay Problem                April 2023
 
@@ -726,5 +726,5 @@ Internet-Draft             DKIM Replay Problem                April 2023
 
 
 
-Chuang, et al.           Expires 17 October 2023               [Page 13]
+Chuang, et al.           Expires 18 October 2023               [Page 13]
 ```

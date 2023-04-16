@@ -192,7 +192,8 @@ works on behalf of the recipient to deliver the message to their
 inbox; it also might perform filtering.</t>
 </dd>
 </dl>
-<t>Any of these actors, as well as those below, can add trace and operational header fields.</t>
+<t>Any of these actors, as well as those below, can add trace and
+operational header fields.</t>
 <t>Modern email often includes additional services.  Three that are
 relevant to DKIM Replay are:</t>
 
@@ -251,10 +252,15 @@ either the author or the recipient.  As such, these cases should
 have authentication that succeeds.</t>
 <t>In this type of flow, SPF is expected to validate.</t>
 <t>A DKIM Replay Attack uses a single message, sent through Direct delivery, and repurposes it.</t>
-<t>Indirect Delivery: This is mail involving a Mediator, producing a
+
+<dl>
+<dt>Indirect Delivery:</dt>
+<dd><t>This is mail involving a Mediator, producing a
 sequence of submission/delivery segments.  While not required, the
 Mediator is typically viewed as being in an ADMD that is independent
 of the author's ADMD and independent of the recipient's ADMD.</t>
+</dd>
+</dl>
 </section>
 
 <section anchor="direct-examples"><name>Direct examples</name>
